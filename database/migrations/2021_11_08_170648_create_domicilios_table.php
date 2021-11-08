@@ -18,6 +18,9 @@ class CreateDomiciliosTable extends Migration
             $table->string('calle');
             $table->string('numero');
             $table->integer('cp');
+
+            $table->foreignId('persona_id')->constrained('personas');
+
             $table->timestamps();
         });
     }
