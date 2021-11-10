@@ -22,14 +22,6 @@ class CreatePersonasTable extends Migration
 
             $table->timestamps();
         });
-
-        Schema:table('personas', function(Blueprint $table) {
-            $table->unsignedBigInteger('padre');
-            $table->foreign('padre')->references('id')->on('cuentas');
-
-            $table->unsignedBigInteger('madre');
-            $table->foreign('madre')->references('id')->on('cuentas');
-        });
     }
 
     /**

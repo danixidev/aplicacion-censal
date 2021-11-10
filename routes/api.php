@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PersonasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('personas')->group(function() {
+    Route::put('/crear', [PersonasController::class, 'crear']);
+    Route::put('/borrar', [PersonasController::class, 'borrar']);
+    Route::put('/modificar', [PersonasController::class, 'modificar']);
+    Route::put('/listar', [PersonasController::class, 'listar']);
+    Route::put('/ver', [PersonasController::class, 'ver']);
 });
