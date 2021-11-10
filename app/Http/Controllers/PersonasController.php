@@ -24,7 +24,7 @@ class PersonasController extends Controller
             $persona->save();
             $respuesta['msg'] = "Persona guardada con id ".$persona->id;
         } catch (\Throwable $th) {
-            $respuesta['msg'] = $e->getMessage();
+            $respuesta['msg'] = $th->getMessage();
             $respuesta['status'] = 0;
         }
 
@@ -41,7 +41,7 @@ class PersonasController extends Controller
                 $persona->delete();
                 $respuesta['msg'] = "Persona borrada";
             } catch (\Throwable $th) {
-                $respuesta['msg'] = $e->getMessage();
+                $respuesta['msg'] = $th->getMessage();
                 $respuesta['status'] = 0;
             }
         }
