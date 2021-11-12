@@ -81,13 +81,44 @@ class PersonasController extends Controller
             $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
             $respuesta['status'] = 0;
         }
+
+        return response()->json($respuesta);
     }
 
-    public function listar (Request $req) {
-        
+    public function listar () {
+        $respuesta = ["status" => 1, "msg" => ""];
+
+        try {
+            $respuesta['datos'] = Persona::all();
+        } catch (\Throwable $th) {
+            $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
+            $respuesta['status'] = 0;
+        }
+
+        return response()->json($respuesta);
     }
 
-    public function ver (Request $req) {
-        
+    public function ver ($id) {
+        $respuesta = ["status" => 1, "msg" => ""];
+
+        // Buscar a la persona a editar
+        $persona = Persona::find($id);
+
+        // Escribir en la base de datos
+        try {
+            $persona = Persona::find($id);
+            if($persona) {
+                $persona->makeVisible('primer_apellido');
+                $respuesta['datos'] = $persona;
+            } else {
+                $respuesta['status'] = 0;
+                $respuesta['msg'] = "Persona no encontrada";
+            }
+        } catch (\Throwable $th) {
+            $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
+            $respuesta['status'] = 0;
+        }
+
+        return response()->json($respuesta);
     }
 }
