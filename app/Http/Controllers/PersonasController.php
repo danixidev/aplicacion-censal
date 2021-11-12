@@ -24,13 +24,14 @@ class PersonasController extends Controller
             $persona->save();
             $respuesta['msg'] = "Persona guardada con id ".$persona->id;
         } catch (\Throwable $th) {
-            $respuesta['msg'] = $th->getMessage();
+            $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
             $respuesta['status'] = 0;
         }
 
         return response()->json($respuesta);
     }
-    public function borrar (Request $req) {
+
+    public function borrar ($id) {
         $respuesta = ["status" => 1, "msg" => ""];
 
         // Buscar a la persona a borrar
@@ -49,12 +50,43 @@ class PersonasController extends Controller
 
         return response()->json($respuesta);
     }
-    public function modificar (Request $req) {
 
+    public function editar (Request $req, $id) {
+        $respuesta = ["status" => 1, "msg" => ""];
+
+        $datos = $req->getContent();
+        // VALIDAR EL JSON
+        $datos = json_decode($datos);
+
+        // Buscar a la persona a editar
+        $persona = Persona::find($id);
+
+        if ($persona) {
+            if(isset($datos->nombre)) {
+                $persona->nombre = $datos->nombre;
+            }
+            if(isset($datos->primer_apellido)) {
+                $persona->primer_apellido = $datos->primer_apellido;
+            }
+            if(isset($datos->segundo_apellido)) {
+                $persona->segundo_apellido = $datos->segundo_apellido;
+            }
+        }
+
+        // Escribir en la base de datos
+        try {
+            $persona->save();
+            $respuesta['msg'] = "Persona actualizada";
+        } catch (\Throwable $th) {
+            $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
+            $respuesta['status'] = 0;
+        }
     }
+
     public function listar (Request $req) {
         
     }
+
     public function ver (Request $req) {
         
     }

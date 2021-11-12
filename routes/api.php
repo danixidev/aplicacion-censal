@@ -17,8 +17,8 @@ use App\Http\Controllers\PersonasController;
 
 Route::prefix('personas')->group(function() {
     Route::put('/crear', [PersonasController::class, 'crear']);
-    Route::delete('/borrar', [PersonasController::class, 'borrar']);
-    Route::put('/modificar', [PersonasController::class, 'modificar']);
+    Route::delete('/borrar/{id}', [PersonasController::class, 'borrar']);
+    Route::put('/editar/{id}', [PersonasController::class, 'editar']);
     Route::put('/listar', [PersonasController::class, 'listar']);
     Route::put('/ver', [PersonasController::class, 'ver']);
 });
