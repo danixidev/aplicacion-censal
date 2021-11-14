@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PersonasController;
+use App\Http\Controllers\DomiciliosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,4 +22,11 @@ Route::prefix('personas')->group(function() {
     Route::put('/editar/{id}', [PersonasController::class, 'editar']);
     Route::get('/listar', [PersonasController::class, 'listar']);
     Route::get('/ver/{id}', [PersonasController::class, 'ver']);
+});
+
+Route::prefix('domicilio')->group(function() {
+    Route::put('/crear', [DomiciliosController::class, 'crear']);
+    Route::delete('/borrar/{id}', [DomiciliosController::class, 'borrar']);
+    Route::put('/editar/{id}', [DomiciliosController::class, 'editar']);
+    Route::get('/ver/{id}', [DomiciliosController::class, 'ver']);
 });
