@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Domicilio;
 use App\Models\Cp;
 use App\Models\Localidade;
+use League\Flysystem\Adapter\Local;
 
 class DomiciliosController extends Controller
 {
@@ -94,9 +95,16 @@ class DomiciliosController extends Controller
             $domicilio = Domicilio::find($id);
 
             $codigo_postal = $domicilio['codigo_postal'];
-            $localidad_id = Cp::select('localidad_id')->where('cp', $codigo_postal)->get();
-            $localidad_id = Cp::select('localidad_id')->where('cp', $codigo_postal)->get();
 
+
+            $localidad_id = Cp::select('localidad_id')->where('cp', $codigo_postal)->get()->toArray();
+            $localidad = Localidade::select('nombre_localidad')->where('id', $localidad_id)->get();
+
+
+            $datos_domicilio = [
+                "codigo_postal" => $codigo_postal,
+                "localidad" => $localidad
+            ];
 /*
             $codigo_postal
             $localidad
@@ -106,6 +114,7 @@ class DomiciliosController extends Controller
 
             if($domicilio) {
                 $respuesta['datos'] = $domicilio;
+                $respuesta['domicilio'] = $datos_domicilio;
             } else {
                 $respuesta['status'] = 0;
                 $respuesta['msg'] = "Domicilio no encontrado";
