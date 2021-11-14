@@ -14,11 +14,11 @@ class UpdatePersonasTable extends Migration
     public function up()
     {
         Schema::table('personas', function(Blueprint $table) {
-            $table->unsignedBigInteger('padre');
-            $table->foreign('padre')->references('id')->on('cuentas');
+            $table->unsignedBigInteger('padre')->nullable();
+            $table->foreign('padre')->references('id')->on('personas');
 
-            $table->unsignedBigInteger('madre');
-            $table->foreign('madre')->references('id')->on('cuentas');
+            $table->unsignedBigInteger('madre')->nullable();
+            $table->foreign('madre')->references('id')->on('personas');
         });
     }
 
@@ -29,7 +29,7 @@ class UpdatePersonasTable extends Migration
      */
     public function down()
     {
-        Schema:table('personas', function(Blueprint $table) {
+        Schema::table('personas', function(Blueprint $table) {
             $table->dropColumn(['padre', 'madre']);
         });
     }
