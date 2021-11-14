@@ -17,7 +17,6 @@ class CreateDomiciliosTable extends Migration
             $table->id();
             $table->string('calle');
             $table->string('numero')->comment('(puerta, piso, etc.)');
-            $table->integer('cp');
 
             $table->timestamps();
         });
