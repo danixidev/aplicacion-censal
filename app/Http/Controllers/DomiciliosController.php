@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use League\Flysystem\Adapter\Local;
+
+
 use App\Models\Domicilio;
 use App\Models\Cp;
 use App\Models\Localidade;
-use League\Flysystem\Adapter\Local;
+use App\Models\Provincia;
+use App\Models\Comunidade;
 
 class DomiciliosController extends Controller
 {
@@ -96,21 +100,24 @@ class DomiciliosController extends Controller
 
             $codigo_postal = $domicilio['codigo_postal'];
 
+            // Tabla 'cps'
+            $localidad_id = Cp::where('cp', $codigo_postal)->value('localidad_id');     //Id de la localidad a la que pertenece
+            $localidad = Localidade::where('id', $localidad_id)->value('nombre_localidad');     //Nombre de la localidad a la que pertenece
 
-            $localidad_id = Cp::select('localidad_id')->where('cp', $codigo_postal)->get()->toArray();
-            $localidad = Localidade::select('nombre_localidad')->where('id', $localidad_id)->get();
+            // Tabla 'localidades'
+            $provincia_id = Localidade::where('nombre_localidad', $localidad)->value('provincia_id');       //Id de la provincia a la que pertenece
+            $provincia = Provincia::where('id', $provincia_id)->value('nombre_provincia');      //Nombre de la provincia a la que pertenece
 
+            // Tabla 'provincias'
+            $comunidad_id = Provincia::where('nombre_provincia', $provincia)->value('comunidad_id');        //Id de la comunidad a la que pertenece
+            $comunidad = Comunidade::where('id', $comunidad_id)->value('nombre_comunidad');     //Nombre de la comunidad a la que pertenece
 
             $datos_domicilio = [
-                "codigo_postal" => $codigo_postal,
-                "localidad" => $localidad
+                "codigo_postal" => $codigo_postal,      //Valor opcional, añadido para que sea mas visual (es redundante)
+                "localidad" => $localidad,
+                "provincia" => $provincia,
+                "comunidad" => $comunidad
             ];
-/*
-            $codigo_postal
-            $localidad
-            $provincia
-            $comunidad
-*/
 
             if($domicilio) {
                 $respuesta['datos'] = $domicilio;
