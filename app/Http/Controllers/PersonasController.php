@@ -117,7 +117,6 @@ class PersonasController extends Controller
     public function ver ($id) {
         $respuesta = ["status" => 1, "msg" => ""];
 
-        // Escribir en la base de datos
         try {
             $persona = Persona::find($id);
             if($persona) {
