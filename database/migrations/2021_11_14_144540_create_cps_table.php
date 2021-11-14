@@ -14,8 +14,7 @@ class CreateCpsTable extends Migration
     public function up()
     {
         Schema::create('cps', function (Blueprint $table) {
-            $table->id();
-            $table->string('cp', 50)->unique();
+            $table->bigInteger('cp')->primary()->unique();
             $table->foreignId('localidad_id')->constrained('localidades');
             $table->timestamps();
         });

@@ -33,8 +33,11 @@ class UpdatePersonasTable extends Migration
     public function down()
     {
         Schema::table('personas', function(Blueprint $table) {
+            $table->dropForeign(['domicilio']);
             $table->dropForeign(['padre']);
             $table->dropForeign(['madre']);
+
+            $table->dropColumn('domicilio');
             $table->dropColumn('padre');
             $table->dropColumn('madre');
         });

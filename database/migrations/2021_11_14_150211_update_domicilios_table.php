@@ -14,8 +14,8 @@ class UpdateDomiciliosTable extends Migration
     public function up()
     {
         Schema::table('domicilios', function(Blueprint $table) {
-            $table->unsignedBigInteger('cp');
-            $table->foreign('cp')->references('id')->on('cps');
+            $table->bigInteger('codigo_postal');
+            $table->foreign('codigo_postal')->references('cp')->on('cps');
         });
     }
 
@@ -27,8 +27,8 @@ class UpdateDomiciliosTable extends Migration
     public function down()
     {
         Schema::table('domicilios', function(Blueprint $table) {
-            $table->dropForeign(['cp']);
-            $table->dropColumn('cp');
+            $table->dropForeign(['codigo_postal']);
+            $table->dropColumn('codigo_postal');
         });
     }
 }
