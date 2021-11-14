@@ -20,5 +20,5 @@ Route::prefix('personas')->group(function() {
     Route::delete('/borrar/{id}', [PersonasController::class, 'borrar']);
     Route::put('/editar/{id}', [PersonasController::class, 'editar']);
     Route::get('/listar', [PersonasController::class, 'listar']);
-    Route::put('/ver', [PersonasController::class, 'ver']);
+    Route::get('/ver/{id}', [PersonasController::class, 'ver']);
 });

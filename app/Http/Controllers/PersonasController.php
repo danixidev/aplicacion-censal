@@ -19,6 +19,18 @@ class PersonasController extends Controller
         $persona->nombre = $datos->nombre;
         $persona->primer_apellido = $datos->primer_apellido;
         $persona->segundo_apellido = $datos->segundo_apellido;
+        $persona->domicilio = $datos->domicilio;
+
+        if(!isset($datos->padre)) {
+            $persona->padre = NULL;
+        } else {
+            $persona->padre = $datos->padre;
+        }
+        if(!isset($datos->madre)) {
+            $persona->madre = NULL;
+        } else {
+            $persona->madre = $datos->madre;
+        }
 
         try {
             $persona->save();
@@ -71,6 +83,9 @@ class PersonasController extends Controller
             if(isset($datos->segundo_apellido)) {
                 $persona->segundo_apellido = $datos->segundo_apellido;
             }
+            if(isset($datos->domicilio)) {
+                $persona->domicilio = $datos->domicilio;
+            }
         }
 
         // Escribir en la base de datos
@@ -101,14 +116,11 @@ class PersonasController extends Controller
     public function ver ($id) {
         $respuesta = ["status" => 1, "msg" => ""];
 
-        // Buscar a la persona a editar
-        $persona = Persona::find($id);
-
         // Escribir en la base de datos
         try {
             $persona = Persona::find($id);
             if($persona) {
-                $persona->makeVisible('primer_apellido');
+                // $persona->makeVisible('primer_apellido');
                 $respuesta['datos'] = $persona;
             } else {
                 $respuesta['status'] = 0;
