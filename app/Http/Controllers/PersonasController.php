@@ -5,6 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Persona;
 
+
+use App\Models\Domicilio;
+use App\Models\Cp;
+use App\Models\Localidade;
+use App\Models\Provincia;
+use App\Models\Comunidade;
+use Faker\Provider\ar_JO\Person;
+
 class PersonasController extends Controller
 {
     public function crear (Request $req) {
@@ -117,11 +125,42 @@ class PersonasController extends Controller
     public function ver ($id) {
         $respuesta = ["status" => 1, "msg" => ""];
 
+        $domicilio_id = Persona::where('id', $id)->value('domicilio');
+        $domicilio = Domicilio::find($domicilio_id);
+
+        $calle = Domicilio::where('id', $domicilio_id)->value('calle');
+        $numero = Domicilio::where('id', $domicilio_id)->value('numero');
+
+        $codigo_postal = $domicilio['codigo_postal'];
+
+        // Tabla 'cps'
+        $localidad_id = Cp::where('cp', $codigo_postal)->value('localidad_id');     //Id de la localidad a la que pertenece
+        $localidad = Localidade::where('id', $localidad_id)->value('nombre_localidad');     //Nombre de la localidad a la que pertenece
+
+        // Tabla 'localidades'
+        $provincia_id = Localidade::where('nombre_localidad', $localidad)->value('provincia_id');       //Id de la provincia a la que pertenece
+        $provincia = Provincia::where('id', $provincia_id)->value('nombre_provincia');      //Nombre de la provincia a la que pertenece
+
+        // Tabla 'provincias'
+        $comunidad_id = Provincia::where('nombre_provincia', $provincia)->value('comunidad_id');        //Id de la comunidad a la que pertenece
+        $comunidad = Comunidade::where('id', $comunidad_id)->value('nombre_comunidad');     //Nombre de la comunidad a la que pertenece
+
+        $datos_domicilio = [
+            "calle" => $calle,
+            "numero" => $numero,
+            "codigo_postal" => $codigo_postal,      //Valor opcional, añadido para que sea mas visual (es redundante)
+            "localidad" => $localidad,
+            "provincia" => $provincia,
+            "comunidad" => $comunidad
+        ];
+
+
         try {
             $persona = Persona::find($id);
             if($persona) {
                 $persona->makeVisible(['domicilio','padre','madre','created_at','updated_at']);
                 $respuesta['datos'] = $persona;
+                $respuesta['domicilio'] = $datos_domicilio;
             } else {
                 $respuesta['status'] = 0;
                 $respuesta['msg'] = "Persona no encontrada";

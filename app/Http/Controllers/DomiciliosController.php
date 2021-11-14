@@ -98,6 +98,9 @@ class DomiciliosController extends Controller
         try {
             $domicilio = Domicilio::find($id);
 
+            $calle = Domicilio::where('id', $id)->value('calle');
+            $numero = Domicilio::where('id', $id)->value('numero');
+
             $codigo_postal = $domicilio['codigo_postal'];
 
             // Tabla 'cps'
@@ -113,6 +116,8 @@ class DomiciliosController extends Controller
             $comunidad = Comunidade::where('id', $comunidad_id)->value('nombre_comunidad');     //Nombre de la comunidad a la que pertenece
 
             $datos_domicilio = [
+                "calle" => $calle,
+                "numero" => $numero,
                 "codigo_postal" => $codigo_postal,      //Valor opcional, añadido para que sea mas visual (es redundante)
                 "localidad" => $localidad,
                 "provincia" => $provincia,
@@ -120,8 +125,9 @@ class DomiciliosController extends Controller
             ];
 
             if($domicilio) {
-                $respuesta['datos'] = $domicilio;
-                $respuesta['domicilio'] = $datos_domicilio;
+                $respuesta['datos'] = $datos_domicilio;
+                // $respuesta['datos'] = $domicilio;
+                // $respuesta['domicilio'] = $datos_domicilio;
             } else {
                 $respuesta['status'] = 0;
                 $respuesta['msg'] = "Domicilio no encontrado";
