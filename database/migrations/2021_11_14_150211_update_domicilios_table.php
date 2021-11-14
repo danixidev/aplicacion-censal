@@ -14,7 +14,7 @@ class UpdateDomiciliosTable extends Migration
     public function up()
     {
         Schema::table('domicilios', function(Blueprint $table) {
-            $table->bigInteger('codigo_postal')->nullable();    //REMOVE WHEN FINISHED : TESTING PURPOSES ONLY
+            $table->bigInteger('codigo_postal')->nullable();    //REMOVE 'nullable()' WHEN FINISHED : TODO
             $table->foreign('codigo_postal')->references('cp')->on('cps');
         });
     }
