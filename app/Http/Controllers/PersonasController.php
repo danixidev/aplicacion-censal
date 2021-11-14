@@ -20,6 +20,7 @@ class PersonasController extends Controller
         $persona->primer_apellido = $datos->primer_apellido;
         $persona->segundo_apellido = $datos->segundo_apellido;
         $persona->domicilio = $datos->domicilio;
+        $persona->nacimiento = $datos->nacimiento;
 
         if(!isset($datos->padre)) {
             $persona->padre = NULL;
@@ -120,7 +121,7 @@ class PersonasController extends Controller
         try {
             $persona = Persona::find($id);
             if($persona) {
-                // $persona->makeVisible('primer_apellido');
+                $persona->makeVisible(['domicilio','padre','madre','created_at','updated_at']);
                 $respuesta['datos'] = $persona;
             } else {
                 $respuesta['status'] = 0;
