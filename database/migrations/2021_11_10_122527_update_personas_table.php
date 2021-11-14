@@ -13,7 +13,7 @@ class UpdatePersonasTable extends Migration
      */
     public function up()
     {
-        Schema:table('personas', function(Blueprint $table) {
+        Schema::table('personas', function(Blueprint $table) {
             $table->unsignedBigInteger('padre');
             $table->foreign('padre')->references('id')->on('cuentas');
 
