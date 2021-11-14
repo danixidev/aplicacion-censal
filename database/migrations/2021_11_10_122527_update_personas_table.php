@@ -14,6 +14,9 @@ class UpdatePersonasTable extends Migration
     public function up()
     {
         Schema::table('personas', function(Blueprint $table) {
+            $table->unsignedBigInteger('domicilio');
+            $table->foreign('domicilio')->references('id')->on('domicilios');
+
             $table->unsignedBigInteger('padre')->nullable();
             $table->foreign('padre')->references('id')->on('personas');
 
