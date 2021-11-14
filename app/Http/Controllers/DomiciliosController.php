@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Domicilio;
+use App\Models\Cp;
+use App\Models\Localidade;
 
 class DomiciliosController extends Controller
 {
@@ -18,7 +20,7 @@ class DomiciliosController extends Controller
 
         $domicilio->calle = $datos->calle;
         $domicilio->numero = $datos->numero;
-        //$domicilio->codigo_postal = $datos->codigo_postal;
+        $domicilio->codigo_postal = $datos->codigo_postal;
 
 
         try {
@@ -90,6 +92,10 @@ class DomiciliosController extends Controller
 
         try {
             $domicilio = Domicilio::find($id);
+
+            $codigo_postal = $domicilio['codigo_postal'];
+            $localidad_id = Cp::select('localidad_id')->where('cp', $codigo_postal)->get();
+            $localidad_id = Cp::select('localidad_id')->where('cp', $codigo_postal)->get();
 
 /*
             $codigo_postal
