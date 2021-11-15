@@ -18,4 +18,9 @@ class Persona extends Model
         'created_at',
         'updated_at'
     ];
+
+    // public function father() {
+    //     return $this->hasOne(self::class, 'padre');
+    // }
+
 }

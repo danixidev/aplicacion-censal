@@ -158,8 +158,21 @@ class PersonasController extends Controller
         try {
             $persona = Persona::find($id);
             if($persona) {
+                // $persona->father;
+
+                $padre_id = Persona::where('id', $id)->value('padre');
+                $padre = Persona::where('id', $padre_id)->get();
+
+                $madre_id = Persona::where('id', $id)->value('madre');
+                $madre = Persona::where('id', $madre_id)->get();
+
+                $padres['padre'] = $padre;
+                $padres['madre'] = $madre;
+
+
                 $persona->makeVisible(['domicilio','padre','madre','created_at','updated_at']);
                 $respuesta['datos'] = $persona;
+                $respuesta['padres'] = $padres;
                 $respuesta['domicilio'] = $datos_domicilio;
             } else {
                 $respuesta['status'] = 0;
