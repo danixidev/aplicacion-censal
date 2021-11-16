@@ -125,6 +125,49 @@ class PersonasController extends Controller
     public function ver ($id) {
         $respuesta = ["status" => 1, "msg" => ""];
 
+        try {
+            $persona = Persona::find($id);
+            if($persona) {
+                // $persona->father;
+
+                $persona->makeVisible(['domicilio','padre','madre','created_at','updated_at']);
+                $respuesta['datos'] = $persona;
+                $respuesta['padres'] = $this->buscarPadres($id);
+                $respuesta['hijos'] = $this->buscarHijos($id);
+                $respuesta['domicilio'] = $this->buscarDatosDireccion($id);
+            } else {
+                $respuesta['status'] = 0;
+                $respuesta['msg'] = "Persona no encontrada";
+            }
+        } catch (\Throwable $th) {
+            $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
+            $respuesta['status'] = 0;
+        }
+
+        return response()->json($respuesta);
+    }
+
+    private function buscarHijos($id) {
+        $p_id = Persona::where('id', $id)->value('id');
+        $p = Persona::where('padre', $p_id)->orWhere('madre', $p_id)->get();
+
+        return $p;
+    }
+
+    private function buscarPadres($id) {
+        $padre_id = Persona::where('id', $id)->value('padre');
+        $padre = Persona::where('id', $padre_id)->get();
+
+        $madre_id = Persona::where('id', $id)->value('madre');
+        $madre = Persona::where('id', $madre_id)->get();
+
+        $padres['padre'] = $padre;
+        $padres['madre'] = $madre;
+
+        return $padres;
+    }
+
+    private function buscarDatosDireccion($id) {
         $domicilio_id = Persona::where('id', $id)->value('domicilio');
         $domicilio = Domicilio::find($domicilio_id);
 
@@ -154,35 +197,6 @@ class PersonasController extends Controller
             "comunidad" => $comunidad
         ];
 
-
-        try {
-            $persona = Persona::find($id);
-            if($persona) {
-                // $persona->father;
-
-                $padre_id = Persona::where('id', $id)->value('padre');
-                $padre = Persona::where('id', $padre_id)->get();
-
-                $madre_id = Persona::where('id', $id)->value('madre');
-                $madre = Persona::where('id', $madre_id)->get();
-
-                $padres['padre'] = $padre;
-                $padres['madre'] = $madre;
-
-
-                $persona->makeVisible(['domicilio','padre','madre','created_at','updated_at']);
-                $respuesta['datos'] = $persona;
-                $respuesta['padres'] = $padres;
-                $respuesta['domicilio'] = $datos_domicilio;
-            } else {
-                $respuesta['status'] = 0;
-                $respuesta['msg'] = "Persona no encontrada";
-            }
-        } catch (\Throwable $th) {
-            $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
-            $respuesta['status'] = 0;
-        }
-
-        return response()->json($respuesta);
+        return $datos_domicilio;
     }
 }

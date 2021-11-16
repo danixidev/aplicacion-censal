@@ -98,34 +98,8 @@ class DomiciliosController extends Controller
         try {
             $domicilio = Domicilio::find($id);
 
-            $calle = Domicilio::where('id', $id)->value('calle');
-            $numero = Domicilio::where('id', $id)->value('numero');
-
-            $codigo_postal = $domicilio['codigo_postal'];
-
-            // Tabla 'cps'
-            $localidad_id = Cp::where('cp', $codigo_postal)->value('localidad_id');     //Id de la localidad a la que pertenece
-            $localidad = Localidade::where('id', $localidad_id)->value('nombre_localidad');     //Nombre de la localidad a la que pertenece
-
-            // Tabla 'localidades'
-            $provincia_id = Localidade::where('nombre_localidad', $localidad)->value('provincia_id');       //Id de la provincia a la que pertenece
-            $provincia = Provincia::where('id', $provincia_id)->value('nombre_provincia');      //Nombre de la provincia a la que pertenece
-
-            // Tabla 'provincias'
-            $comunidad_id = Provincia::where('nombre_provincia', $provincia)->value('comunidad_id');        //Id de la comunidad a la que pertenece
-            $comunidad = Comunidade::where('id', $comunidad_id)->value('nombre_comunidad');     //Nombre de la comunidad a la que pertenece
-
-            $datos_domicilio = [
-                "calle" => $calle,
-                "numero" => $numero,
-                "codigo_postal" => $codigo_postal,      //Valor opcional, añadido para que sea mas visual (es redundante)
-                "localidad" => $localidad,
-                "provincia" => $provincia,
-                "comunidad" => $comunidad
-            ];
-
             if($domicilio) {
-                $respuesta['datos'] = $datos_domicilio;
+                $respuesta['datos'] = $this->buscarDatosDireccion($id, $domicilio);
                 // $respuesta['datos'] = $domicilio;
                 // $respuesta['domicilio'] = $datos_domicilio;
             } else {
@@ -138,5 +112,35 @@ class DomiciliosController extends Controller
         }
 
         return response()->json($respuesta);
+    }
+
+    private function buscarDatosDireccion($id, $domicilio) {
+        $calle = Domicilio::where('id', $id)->value('calle');
+        $numero = Domicilio::where('id', $id)->value('numero');
+
+        $codigo_postal = $domicilio['codigo_postal'];
+
+        // Tabla 'cps'
+        $localidad_id = Cp::where('cp', $codigo_postal)->value('localidad_id');     //Id de la localidad a la que pertenece
+        $localidad = Localidade::where('id', $localidad_id)->value('nombre_localidad');     //Nombre de la localidad a la que pertenece
+
+        // Tabla 'localidades'
+        $provincia_id = Localidade::where('nombre_localidad', $localidad)->value('provincia_id');       //Id de la provincia a la que pertenece
+        $provincia = Provincia::where('id', $provincia_id)->value('nombre_provincia');      //Nombre de la provincia a la que pertenece
+
+        // Tabla 'provincias'
+        $comunidad_id = Provincia::where('nombre_provincia', $provincia)->value('comunidad_id');        //Id de la comunidad a la que pertenece
+        $comunidad = Comunidade::where('id', $comunidad_id)->value('nombre_comunidad');     //Nombre de la comunidad a la que pertenece
+
+        $datos_domicilio = [
+            "calle" => $calle,
+            "numero" => $numero,
+            "codigo_postal" => $codigo_postal,      //Valor opcional, añadido para que sea mas visual (es redundante)
+            "localidad" => $localidad,
+            "provincia" => $provincia,
+            "comunidad" => $comunidad
+        ];
+
+        return $datos_domicilio;
     }
 }
