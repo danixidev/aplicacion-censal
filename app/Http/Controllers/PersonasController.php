@@ -134,6 +134,7 @@ class PersonasController extends Controller
                 $respuesta['datos'] = $persona;
                 $respuesta['padres'] = $this->buscarPadres($id);
                 $respuesta['hijos'] = $this->buscarHijos($id);
+                $respuesta['hermanos'] = $this->buscarHermanos($id);
                 $respuesta['domicilio'] = $this->buscarDatosDireccion($id);
             } else {
                 $respuesta['status'] = 0;
@@ -147,13 +148,6 @@ class PersonasController extends Controller
         return response()->json($respuesta);
     }
 
-    private function buscarHijos($id) {
-        $p_id = Persona::where('id', $id)->value('id');
-        $p = Persona::where('padre', $p_id)->orWhere('madre', $p_id)->get();
-
-        return $p;
-    }
-
     private function buscarPadres($id) {
         $padre_id = Persona::where('id', $id)->value('padre');
         $padre = Persona::where('id', $padre_id)->get();
@@ -165,6 +159,23 @@ class PersonasController extends Controller
         $padres['madre'] = $madre;
 
         return $padres;
+    }
+
+    private function buscarHijos($id) {
+        $padres_id = Persona::where('id', $id)->value('id');
+        $hijos = Persona::where('padre', $padres_id)->orWhere('madre', $padres_id)->get();
+
+        return $hijos;
+    }
+
+    private function buscarHermanos($id) {
+        $id = Persona::where('id', $id)->value('id');
+
+        $padre_id = Persona::where('id', $id)->value('padre');
+        $madre_id = Persona::where('id', $id)->value('madre');
+        $hermanos = Persona::where('padre', $padre_id)->orWhere('madre', $madre_id)->get();
+
+        return $hermanos;
     }
 
     private function buscarDatosDireccion($id) {
