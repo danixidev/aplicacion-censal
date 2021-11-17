@@ -173,7 +173,7 @@ class PersonasController extends Controller
 
         $padre_id = Persona::where('id', $id)->value('padre');
         $madre_id = Persona::where('id', $id)->value('madre');
-        $hermanos = Persona::where('padre', $padre_id)->orWhere('madre', $madre_id)->get();     //Ocultar a uno mismo
+        $hermanos = Persona::where('padre', $padre_id)->where('madre', $madre_id)->where('id', '<>', $id)->get();     //Ocultar a uno mismo
 
         return $hermanos;
     }
