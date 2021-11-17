@@ -151,11 +151,34 @@ class PersonasController extends Controller
         return response()->json($respuesta);
     }
 
-    public function filtrarEdad() {
+    public function filtrarEdad($nacimiento) {
         $respuesta = ["status" => 1, "msg" => ""];
 
         try {
-            $respuesta['datos'] = Persona::orderBy('nacimiento', 'asc')->get();
+            $respuesta['datos'] = Persona::where('nacimiento', $nacimiento)->orderBy('nacimiento', 'asc')->get();
+        } catch (\Throwable $th) {
+            $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
+            $respuesta['status'] = 0;
+        }
+
+        return response()->json($respuesta);
+    }
+
+    public function filtrarProvincia($provincia) {
+        $respuesta = ["status" => 1, "msg" => ""];
+
+        try {
+            $provincia = Provincia::where('nombre_provincia', $provincia)->value('nombre_provincia');
+
+
+            $provincia_id = Provincia::where('nombre_provincia', $provincia)->value('id');
+            $localidad_id = Localidade::where('provincia_id', $provincia_id)->value('id');
+            $cp = Cp::where('localidad_id', $localidad_id)->value('cp');
+            $domicilio_id = Domicilio::where('codigo_postal', $cp)->value('id');
+
+            $persona = Persona::where('domicilio', $domicilio_id)->get();
+
+            $respuesta['datos'] = $persona;
         } catch (\Throwable $th) {
             $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
             $respuesta['status'] = 0;
