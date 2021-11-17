@@ -95,6 +95,9 @@ class PersonasController extends Controller
             if(isset($datos->domicilio)) {
                 $persona->domicilio = $datos->domicilio;
             }
+            if(isset($datos->nacimiento)) {
+                $persona->nacimiento = $datos->nacimiento;
+            }
         }
 
         // Escribir en la base de datos
@@ -148,6 +151,19 @@ class PersonasController extends Controller
         return response()->json($respuesta);
     }
 
+    public function filtrarEdad() {
+        $respuesta = ["status" => 1, "msg" => ""];
+
+        try {
+            $respuesta['datos'] = Persona::orderBy('nacimiento', 'asc')->get();
+        } catch (\Throwable $th) {
+            $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
+            $respuesta['status'] = 0;
+        }
+
+        return response()->json($respuesta);
+    }
+
     private function buscarPadres($id) {
         $padre_id = Persona::where('id', $id)->value('padre');
         $padre = Persona::where('id', $padre_id)->get();
@@ -163,7 +179,7 @@ class PersonasController extends Controller
 
     private function buscarHijos($id) {
         $padres_id = Persona::where('id', $id)->value('id');
-        $hijos = Persona::where('padre', $padres_id)->orWhere('madre', $padres_id)->get();
+        $hijos = Persona::where('padre', $padres_id)->orWhere('madre', $padres_id)->whereNotNull('padre')->whereNotNull('madre')->get();
 
         return $hijos;
     }

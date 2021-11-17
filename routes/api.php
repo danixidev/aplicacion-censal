@@ -22,6 +22,7 @@ Route::prefix('personas')->group(function() {
     Route::put('/editar/{id}', [PersonasController::class, 'editar']);
     Route::get('/listar', [PersonasController::class, 'listar']);
     Route::get('/ver/{id}', [PersonasController::class, 'ver']);
+    Route::get('/filtrarEdad', [PersonasController::class, 'filtrarEdad']);
 });
 
 Route::prefix('domicilios')->group(function() {
