@@ -29,17 +29,18 @@ class PersonasController extends Controller
         $persona->segundo_apellido = $datos->segundo_apellido;
         $persona->domicilio = $datos->domicilio;
         $persona->nacimiento = $datos->nacimiento;
+        $persona->fallecimiento = $datos->fallecimiento;
 
-        if(!isset($datos->padre)) {
-            $persona->padre = NULL;
-        } else {
-            $persona->padre = $datos->padre;
-        }
-        if(!isset($datos->madre)) {
-            $persona->madre = NULL;
-        } else {
-            $persona->madre = $datos->madre;
-        }
+        // if(!isset($datos->padre)) {
+        //     $persona->padre = NULL;
+        // } else {
+        //     $persona->padre = $datos->padre;
+        // }
+        // if(!isset($datos->madre)) {
+        //     $persona->madre = NULL;
+        // } else {
+        //     $persona->madre = $datos->madre;
+        // }
 
         try {
             $persona->save();
@@ -97,6 +98,9 @@ class PersonasController extends Controller
             }
             if(isset($datos->nacimiento)) {
                 $persona->nacimiento = $datos->nacimiento;
+            }
+            if(isset($datos->fallecimiento)) {
+                $persona->fallecimiento = $datos->fallecimiento;
             }
         }
 
@@ -193,6 +197,33 @@ class PersonasController extends Controller
             $domicilio_id = Domicilio::where('codigo_postal', $cp)->value('id');
 
             $persona = Persona::where('domicilio', $domicilio_id)->get();
+
+            $respuesta['datos'] = $persona;
+        } catch (\Throwable $th) {
+            $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
+            $respuesta['status'] = 0;
+        }
+
+        return response()->json($respuesta);
+    }
+
+    /**
+     * Recibe la condicion a cumplir y la provincia     (ejemplo: /<>/2002-07-03)
+     * Condiciones:
+     *  - Distinto: <> o !=
+     *  - Igual: =
+     *  - Mayor: >
+     *  - Menor: <
+     */
+    public function filtrarFallecidos($condicion) {
+        $respuesta = ["status" => 1, "msg" => ""];
+
+        try {
+            if($condicion == 'true') {
+                $persona = Persona::whereNotNull('fallecimiento')->get();
+            } elseif ($condicion == 'false'){
+                $persona = Persona::whereNull('fallecimiento')->get();
+            }
 
             $respuesta['datos'] = $persona;
         } catch (\Throwable $th) {

@@ -24,6 +24,7 @@ Route::prefix('personas')->group(function() {
     Route::get('/ver/{id}', [PersonasController::class, 'ver']);
     Route::get('/filtrarEdad/{condicion}/{nacimiento}', [PersonasController::class, 'filtrarEdad']);
     Route::get('/filtrarProvincia/{condicion}/{provincia}', [PersonasController::class, 'filtrarProvincia']);
+    Route::get('/filtrarFallecidos/{condicion}', [PersonasController::class, 'filtrarFallecidos']);
 });
 
 Route::prefix('domicilios')->group(function() {
