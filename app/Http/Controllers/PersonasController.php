@@ -198,7 +198,8 @@ class PersonasController extends Controller
         $domicilio_id = Persona::where('id', $id)->value('domicilio');
         $domicilio = Domicilio::find($domicilio_id);
 
-        $calle = Domicilio::where('id', $domicilio_id)->value('calle');
+        // $calle = Domicilio::where('id', $domicilio_id)->value('calle');
+        $calle = $domicilio->calle;
         $numero = Domicilio::where('id', $domicilio_id)->value('numero');
 
         $codigo_postal = $domicilio['codigo_postal'];
