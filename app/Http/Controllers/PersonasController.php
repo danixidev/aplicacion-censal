@@ -151,11 +151,19 @@ class PersonasController extends Controller
         return response()->json($respuesta);
     }
 
-    public function filtrarEdad($nacimiento) {
+    /**
+     * Recibe la condicion a cumplir y la fecha     (ejemplo: /<>/2002-07-03)
+     * Condiciones:
+     *  - Distinto: <> o !=
+     *  - Igual: =
+     *  - Mayor: >
+     *  - Menor: <
+     */
+    public function filtrarEdad($condicion, $nacimiento) {
         $respuesta = ["status" => 1, "msg" => ""];
 
         try {
-            $respuesta['datos'] = Persona::where('nacimiento', $nacimiento)->orderBy('nacimiento', 'asc')->get();
+            $respuesta['datos'] = Persona::where('nacimiento',$condicion , $nacimiento)->orderBy('nacimiento', 'asc')->get();
         } catch (\Throwable $th) {
             $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
             $respuesta['status'] = 0;
@@ -164,11 +172,19 @@ class PersonasController extends Controller
         return response()->json($respuesta);
     }
 
-    public function filtrarProvincia($provincia) {
+    /**
+     * Recibe la condicion a cumplir y la provincia     (ejemplo: /<>/2002-07-03)
+     * Condiciones:
+     *  - Distinto: <> o !=
+     *  - Igual: =
+     *  - Mayor: >
+     *  - Menor: <
+     */
+    public function filtrarProvincia($condicion, $provincia) {
         $respuesta = ["status" => 1, "msg" => ""];
 
         try {
-            $provincia = Provincia::where('nombre_provincia', $provincia)->value('nombre_provincia');
+            $provincia = Provincia::where('nombre_provincia', $condicion, $provincia)->value('nombre_provincia');
 
 
             $provincia_id = Provincia::where('nombre_provincia', $provincia)->value('id');
