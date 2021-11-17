@@ -19,7 +19,7 @@ class CreatePersonasTable extends Migration
             $table->string("primer_apellido", 50);
             $table->string("segundo_apellido", 50);
             $table->date("nacimiento");     //Formato yyyy-mm-dd
-
+            $table->date("fallecimiento")->nullable();     //Formato yyyy-mm-dd
 
             $table->timestamps();
         });
