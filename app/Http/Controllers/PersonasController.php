@@ -167,7 +167,7 @@ class PersonasController extends Controller
         $respuesta = ["status" => 1, "msg" => ""];
 
         try {
-            $respuesta['datos'] = Persona::where('nacimiento',$condicion , $nacimiento)->orderBy('nacimiento', 'asc')->get();
+            $respuesta['datos'] = Persona::where('nacimiento', $condicion, $nacimiento)->orderBy('nacimiento', 'asc')->get();
         } catch (\Throwable $th) {
             $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
             $respuesta['status'] = 0;
