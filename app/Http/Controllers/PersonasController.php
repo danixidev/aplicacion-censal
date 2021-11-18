@@ -31,16 +31,16 @@ class PersonasController extends Controller
         $persona->nacimiento = $datos->nacimiento;
         $persona->fallecimiento = $datos->fallecimiento;
 
-        // if(!isset($datos->padre)) {
-        //     $persona->padre = NULL;
-        // } else {
-        //     $persona->padre = $datos->padre;
-        // }
-        // if(!isset($datos->madre)) {
-        //     $persona->madre = NULL;
-        // } else {
-        //     $persona->madre = $datos->madre;
-        // }
+        if(!isset($datos->padre)) {
+            $persona->padre = NULL;
+        } else {
+            $persona->padre = $datos->padre;
+        }
+        if(!isset($datos->madre)) {
+            $persona->madre = NULL;
+        } else {
+            $persona->madre = $datos->madre;
+        }
 
         try {
             $persona->save();
@@ -248,14 +248,12 @@ class PersonasController extends Controller
     }
 
     private function buscarHijos($id) {
-        $padres_id = Persona::where('id', $id)->value('id');
-        $hijos = Persona::where('padre', $padres_id)->orWhere('madre', $padres_id)->whereNotNull('padre')->whereNotNull('madre')->get();
+        $hijos = Persona::where('padre', $id)->orWhere('madre', $id)->whereNotNull('padre')->whereNotNull('madre')->get();
 
         return $hijos;
     }
 
     private function buscarHermanos($id) {
-        $id = Persona::where('id', $id)->value('id');
 
         $padre_id = Persona::where('id', $id)->value('padre');
         $madre_id = Persona::where('id', $id)->value('madre');
