@@ -188,17 +188,21 @@ class PersonasController extends Controller
         $respuesta = ["status" => 1, "msg" => ""];
 
         try {
-            $provincia = Provincia::where('nombre_provincia', $condicion, $provincia)->value('nombre_provincia');
+            $provincia_id = Provincia::where('nombre_provincia', $condicion, $provincia)->value('id');
 
+            $provincia = Provincia::find($provincia_id);
+            $provincia->comunidad();
 
-            $provincia_id = Provincia::where('nombre_provincia', $provincia)->value('id');
-            $localidad_id = Localidade::where('provincia_id', $provincia_id)->value('id');
-            $cp = Cp::where('localidad_id', $localidad_id)->value('cp');
-            $domicilio_id = Domicilio::where('codigo_postal', $cp)->value('id');
+            return $provincia;
 
-            $persona = Persona::where('domicilio', $domicilio_id)->get();
+            // $provincia_id = Provincia::where('nombre_provincia', $provincia)->value('id');
+            // $localidad_id = Localidade::where('provincia_id', $provincia_id)->value('id');
+            // $cp = Cp::where('localidad_id', $localidad_id)->value('cp');
+            // $domicilio_id = Domicilio::where('codigo_postal', $cp)->value('id');
 
-            $respuesta['datos'] = $persona;
+            // $persona = Persona::where('domicilio', $domicilio_id)->get();
+
+            // $respuesta['datos'] = $persona;
         } catch (\Throwable $th) {
             $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
             $respuesta['status'] = 0;
