@@ -191,7 +191,8 @@ class PersonasController extends Controller
             $provincia_id = Provincia::where('nombre_provincia', $condicion, $provincia)->value('id');
 
             $provincia = Provincia::find($provincia_id);
-            $provincia->comunidad();
+            $provincia->comunidadpadre();
+
 
             return $provincia;
 

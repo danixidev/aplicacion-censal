@@ -9,8 +9,8 @@ class Comunidade extends Model
 {
     use HasFactory;
 
-    public function provinciahija() {
-        return $this->hasMany(Provincia::class, 'comunidad_id');
+    public function provincias() {
+        return $this->hasMany(Provincia::class);
     }
 }
 

@@ -9,10 +9,10 @@ class Provincia extends Model
 {
     use HasFactory;
 
-    public function comunidadpadre() {
-        return $this->belongsTo(Comunidade::class, 'id');
+    public function comunidade() {
+        return $this->belongsTo(Comunidade::class, 'comunidad_id');
     }
-    public function localidadhija() {
-        return $this->hasMany(Localidade::class, 'localidad_id');
+    public function localidades() {
+        return $this->hasMany(Localidade::class);
     }
 }

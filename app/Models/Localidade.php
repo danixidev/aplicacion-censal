@@ -9,10 +9,10 @@ class Localidade extends Model
 {
     use HasFactory;
 
-    public function provinciapadre() {
-        return $this->belongsTo(Provincia::class, 'id');
+    public function provincia() {
+        return $this->belongsTo(Provincia::class);
     }
-    public function cphija() {
-        return $this->hasMany(Cp::class, 'codigo_postal');
+    public function cps() {
+        return $this->hasMany(Cp::class, 'localidad_id');
     }
 }
