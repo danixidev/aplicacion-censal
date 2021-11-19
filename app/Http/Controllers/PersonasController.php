@@ -188,10 +188,13 @@ class PersonasController extends Controller
         $respuesta = ["status" => 1, "msg" => ""];
 
         try {
-            $provincia_id = Provincia::where('nombre_provincia', $condicion, $provincia)->value('id');
+            $provincia = Provincia::where('nombre_provincia', $condicion, $provincia)->first();
 
-            $provincia = Provincia::find($provincia_id);
-            $provincia->comunidadpadre();
+            $localidades = $provincia->localidades;
+
+            foreach ($localidades as $localidad) {
+                // $locadades->
+            }
 
 
             return $provincia;
