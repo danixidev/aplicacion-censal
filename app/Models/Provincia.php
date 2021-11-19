@@ -12,7 +12,6 @@ class Provincia extends Model
     public function comunidade() {
         return $this->belongsTo(Comunidade::class, 'comunidad_id');
     }
-
     public function localidades() {
         return $this->hasMany(Localidade::class);
     }
