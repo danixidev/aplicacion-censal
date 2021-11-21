@@ -103,6 +103,12 @@ class PersonasController extends Controller
             if(isset($datos->fallecimiento)) {
                 $persona->fallecimiento = $datos->fallecimiento;
             }
+            if(isset($datos->padre)) {
+                $persona->padre = $datos->padre;
+            }
+            if(isset($datos->madre)) {
+                $persona->madre = $datos->madre;
+            }
         }
 
         // Escribir en la base de datos
@@ -123,8 +129,6 @@ class PersonasController extends Controller
         try {
             $persona = Persona::find($id);
             if($persona) {
-                // $persona->father;
-
                 $persona->makeVisible(['domicilio','padre','madre','created_at','updated_at']);
                 $respuesta['datos'] = $persona;
                 $respuesta['padres'] = $this->buscarPadres($id);
@@ -160,14 +164,17 @@ class PersonasController extends Controller
         try {
             $persona = DB::table('personas');
 
+            //Si se introduce una fecha se busca con ese filtro
             if($fecha != 0) {
                 $persona->where('nacimiento', $fecha);
             }
+            //Si se introduce true o false en fallecido se busca con ese filtro
             if($fallecido === 'true') {
                 $persona->whereNotNull('fallecimiento');
             } else if($fallecido === 'false') {
                 $persona->whereNull('fallecimiento');
             }
+            //Si se introduce una provincia se busca con ese filtro
             if($provincia != 0) {
                 $persona->select(['personas.*', 'cps.cp', 'localidades.nombre_localidad', 'provincias.nombre_provincia'])
                         ->join('domicilios', 'personas.domicilio', '=', 'domicilios.id')
@@ -209,7 +216,7 @@ class PersonasController extends Controller
 
         $padre_id = Persona::where('id', $id)->value('padre');
         $madre_id = Persona::where('id', $id)->value('madre');
-        $hermanos = Persona::where('padre', $padre_id)->where('madre', $madre_id)->where('id', '<>', $id)->get();     //Ocultar a uno mismo
+        $hermanos = Persona::where('padre', $padre_id)->where('madre', $madre_id)->where('id', '<>', $id)->get();
 
         return $hermanos;
     }
@@ -218,7 +225,6 @@ class PersonasController extends Controller
         $domicilio_id = Persona::where('id', $id)->value('domicilio');
         $domicilio = Domicilio::find($domicilio_id);
 
-        // $calle = Domicilio::where('id', $domicilio_id)->value('calle');
         $calle = $domicilio->calle;
         $numero = Domicilio::where('id', $domicilio_id)->value('numero');
 
