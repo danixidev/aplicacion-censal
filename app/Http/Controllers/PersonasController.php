@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Persona;
 
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Domicilio;
 use App\Models\Cp;
@@ -116,19 +117,6 @@ class PersonasController extends Controller
         return response()->json($respuesta);
     }
 
-    public function listar () {
-        $respuesta = ["status" => 1, "msg" => ""];
-
-        try {
-            $respuesta['datos'] = Persona::all();
-        } catch (\Throwable $th) {
-            $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
-            $respuesta['status'] = 0;
-        }
-
-        return response()->json($respuesta);
-    }
-
     public function ver ($id) {
         $respuesta = ["status" => 1, "msg" => ""];
 
@@ -156,84 +144,40 @@ class PersonasController extends Controller
     }
 
     /**
-     * Recibe la condicion a cumplir y la fecha     (ejemplo: /<>/2002-07-03)
-     * Condiciones:
-     *  - Distinto: <> o !=
-     *  - Igual: =
-     *  - Mayor: >
-     *  - Menor: <
+     *  Recibe parámetros por el método get
+     *  Parámetros:
+     *  - fecha => 1999-12-31
+     *  - provincia => Alicante
+     *  - fallecido => true/false
      */
-    public function filtrarEdad($condicion, $nacimiento) {
+    public function listar(Request $req) {
         $respuesta = ["status" => 1, "msg" => ""];
 
-        try {
-            $respuesta['datos'] = Persona::where('nacimiento', $condicion, $nacimiento)->orderBy('nacimiento', 'asc')->get();
-        } catch (\Throwable $th) {
-            $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
-            $respuesta['status'] = 0;
-        }
-
-        return response()->json($respuesta);
-    }
-
-    /**
-     * Recibe la condicion a cumplir y la provincia     (ejemplo: /<>/2002-07-03)
-     * Condiciones:
-     *  - Distinto: <> o !=
-     *  - Igual: =
-     *  - Mayor: >
-     *  - Menor: <
-     */
-    public function filtrarProvincia($condicion, $provincia) {
-        $respuesta = ["status" => 1, "msg" => ""];
+        $fecha = $req->input('fecha', '0');
+        $provincia = $req->input('provincia', '0');
+        $fallecido = $req->input('fallecido', '0');
 
         try {
-            $provincia = Provincia::where('nombre_provincia', $condicion, $provincia)->first();
+            $persona = DB::table('personas');
 
-            $localidades = $provincia->localidades;
-
-            foreach ($localidades as $localidad) {
-                // $locadades->
+            if($fecha != 0) {
+                $persona->where('nacimiento', $fecha);
+            }
+            if($fallecido === 'true') {
+                $persona->whereNotNull('fallecimiento');
+            } else if($fallecido === 'false') {
+                $persona->whereNull('fallecimiento');
+            }
+            if($provincia != 0) {
+                $persona->select(['personas.*', 'cps.cp', 'localidades.nombre_localidad', 'provincias.nombre_provincia'])
+                        ->join('domicilios', 'personas.domicilio', '=', 'domicilios.id')
+                        ->join('cps', 'domicilios.codigo_postal', '=', 'cps.cp')
+                        ->join('localidades', 'cps.localidad_id', '=', 'localidades.id')
+                        ->join('provincias', 'localidades.provincia_id', '=', 'provincias.id')
+                        ->where('provincias.nombre_provincia', $provincia);
             }
 
-
-            return $provincia;
-
-            // $provincia_id = Provincia::where('nombre_provincia', $provincia)->value('id');
-            // $localidad_id = Localidade::where('provincia_id', $provincia_id)->value('id');
-            // $cp = Cp::where('localidad_id', $localidad_id)->value('cp');
-            // $domicilio_id = Domicilio::where('codigo_postal', $cp)->value('id');
-
-            // $persona = Persona::where('domicilio', $domicilio_id)->get();
-
-            // $respuesta['datos'] = $persona;
-        } catch (\Throwable $th) {
-            $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
-            $respuesta['status'] = 0;
-        }
-
-        return response()->json($respuesta);
-    }
-
-    /**
-     * Recibe la condicion a cumplir y la provincia     (ejemplo: /<>/2002-07-03)
-     * Condiciones:
-     *  - Distinto: <> o !=
-     *  - Igual: =
-     *  - Mayor: >
-     *  - Menor: <
-     */
-    public function filtrarFallecidos($condicion) {
-        $respuesta = ["status" => 1, "msg" => ""];
-
-        try {
-            if($condicion == 'true') {
-                $persona = Persona::whereNotNull('fallecimiento')->get();
-            } elseif ($condicion == 'false'){
-                $persona = Persona::whereNull('fallecimiento')->get();
-            }
-
-            $respuesta['datos'] = $persona;
+            $respuesta['datos'] = $persona->get();
         } catch (\Throwable $th) {
             $respuesta['msg'] = "Se ha producido un error:".$th->getMessage();
             $respuesta['status'] = 0;
